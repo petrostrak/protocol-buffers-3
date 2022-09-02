@@ -19,5 +19,21 @@ There are 15 different scalar types we can use in protocol buffers.
 |Boolean|bool|false|
 |String|string|empty string|
 |Bytes|bytes|empty byte slice|
+|Enums|enum|first value of the enum|
 
 <sub>Strings only accept UTF-8 encoded or 7-bit ASCII</sub>
+
+Specifically for `Enums` the tag number starts at 0.
+```
+enum Weekdays {
+    WEEKDAY_UNSPECIFIED = 0;
+    WEEKDAY_MONDAY = 1;
+    WEEKDAY_TUESDAY = 2;
+    WEEKDAY_WEDNESDAY = 3;
+    WEEKDAY_THURSDAY = 4;
+    WEEKDAY_FRIDAY = 5;
+    WEEKDAY_SATURDAY = 6;
+    WEEKDAY_SUNDAY = 7;
+}
+```
+<sub>For enums we generally keep the 0 tag for the first element of the enum which is unspecified.</sub>

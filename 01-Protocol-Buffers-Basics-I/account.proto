@@ -1,5 +1,15 @@
 syntax = "proto3";
 
+// For enums we generally keep the 0 tag 
+// for the first element of the enum which 
+// is unspecified.
+enum EyeColor {
+    EYE_COLOR_UNSPECIFIED = 0;
+    EYE_COLOR_GREEN = 1;
+    EYE_COLOR_BLUE = 2;
+    EYE_COLOR_BROWN = 3;
+}
+
 message Accout {
     uint32 id = 1;
     string name = 2;
@@ -10,4 +20,6 @@ message Accout {
     // repeated fields represent lists
     // var phones []string
     repeated string phones = 6;
+
+    EyeColor eye_color = 7;
 }

@@ -35,8 +35,21 @@ func doEnum() *pb.Enumeration {
 	}
 }
 
+func doOneOf(msg any) {
+	switch x := msg.(type) {
+	case *pb.Result_Id:
+		fmt.Println(msg.(*pb.Result_Id).Id)
+	case *pb.Result_Message:
+		fmt.Println(msg.(*pb.Result_Message).Message)
+	default:
+		fmt.Printf("msg has unexpected type %v\n", x)
+	}
+}
+
 func main() {
 	fmt.Println(doSimple())
 	fmt.Println(doComplex())
 	fmt.Println(doEnum())
+	doOneOf(&pb.Result_Id{Id: 1})
+	doOneOf(&pb.Result_Message{Message: "hello"})
 }

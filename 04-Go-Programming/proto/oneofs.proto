@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package example.oneofs;
+
+option go_package = "proto-go-programming/proto";
+
+// oneof either takes a message that is string, 
+// or a message that is int32.
+message Result {
+    oneof result {
+        string message = 1;
+        uint32 id = 2;
+    }
+}

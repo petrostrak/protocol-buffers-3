@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+option go_package = "/pb";
+
+message Simple {
+    uint32 id = 1;
+}

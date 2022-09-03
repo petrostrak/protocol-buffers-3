@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package building;
+
+option go_package = "/pb";
+
+import "street.proto";
+
+message Building {
+    string building_name = 1;
+    uint32 building_number = 2;
+    street.Street street = 3;
+}

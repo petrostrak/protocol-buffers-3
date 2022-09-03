@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option go_package = "/pb";
+
+import "city.proto";
+import "street.proto";
+import "building.proto";
+
+message Address {
+    City city = 1;
+    Street street = 2;
+    Building building = 3;
+}

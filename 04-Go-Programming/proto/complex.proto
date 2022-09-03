@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package example.complex;
+
+option go_package = "proto-go-programming/proto";
+
+message Dummy {
+    int32 id = 1;
+    string name = 2;
+}
+
+message Complex {
+    Dummy on_dummy = 1;
+    repeated Dummy multi_dummy = 2;
+}

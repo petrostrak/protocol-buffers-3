@@ -10,7 +10,7 @@ enum EyeColor {
     EYE_COLOR_BROWN = 3;
 }
 
-message Accout {
+message Account {
     uint32 id = 1;
     string name = 2;
     bytes thumbnail = 3;

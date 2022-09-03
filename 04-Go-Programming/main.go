@@ -46,10 +46,22 @@ func doOneOf(msg any) {
 	}
 }
 
+func doMap() *pb.MapExample {
+	return &pb.MapExample{
+		Ids: map[string]*pb.IdWrapper{
+			"key1": {Id: 1},
+			"key2": {Id: 2},
+			"key3": {Id: 4},
+			"key4": {Id: 5},
+		},
+	}
+}
+
 func main() {
 	fmt.Println(doSimple())
 	fmt.Println(doComplex())
 	fmt.Println(doEnum())
 	doOneOf(&pb.Result_Id{Id: 1})
 	doOneOf(&pb.Result_Message{Message: "hello"})
+	fmt.Println(doMap())
 }

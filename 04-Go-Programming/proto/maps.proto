@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package example.maps;
+
+option go_package = "proto-go-programming/proto";
+
+// IdWrapper is the value of the key-value pair in a map.
+// So the type of the wrapper will be the type of the value
+// of the map.
+message IdWrapper {
+    uint32 id = 1;
+}
+
+// MapExample is a map[string]uint32
+message MapExample {
+    map<string, IdWrapper> ids = 1;
+}

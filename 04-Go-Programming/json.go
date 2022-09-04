@@ -21,7 +21,10 @@ func toJSON(pb proto.Message) string {
 }
 
 func fromJSON(in string, pb proto.Message) {
-	err := protojson.Unmarshal([]byte(in), pb)
+	option := protojson.UnmarshalOptions{
+		DiscardUnknown: true,
+	}
+	err := option.Unmarshal([]byte(in), pb)
 	if err != nil {
 		log.Fatalln("cannot decode from JSON", err)
 		return

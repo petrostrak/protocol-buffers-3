@@ -189,3 +189,110 @@ func getSimple() *pb.Simple {
 	}
 }
 ```
+
+### A complex proto struct example
+```
+# .proto
+message Dummy {
+    int32 id = 1;
+    string name = 2;
+}
+
+message Complex {
+    Dummy one_dummy = 1;
+    repeated Dummy multi_dummy = 2;
+}
+
+# .go
+func getComplex() *pb.Complex {
+	return &pb.Complex{
+		OnDummy: &pb.Dummy{
+			Id:   1,
+			Name: "Petros Trak",
+		},
+		MultiDummy: []*pb.Dummy{
+			{Id: 2, Name: "Eirini Tour"},
+			{Id: 3, Name: "Deppy Bou"},
+			{Id: 4, Name: "Giannis Lio"},
+		},
+	}
+}
+```
+
+### A enum proto struct example
+```
+# .proto
+enum EyeColor {
+    EYE_COLOR_UNSPECIFIED = 0;
+    EYE_COLOR_GREEN = 1;
+    EYE_COLOR_BLUE = 2;
+    EYE_COLOR_BROWN = 3;
+}
+
+message Enumeration {
+    EyeColor eye_color = 1;
+}
+
+# .go
+func getEnum() *pb.Enumeration {
+	return &pb.Enumeration{
+		// EyeColor: pb.EyeColor_EYE_COLOR_BROWN,
+		EyeColor: 3,
+	}
+}
+```
+
+### OneOfs
+```
+# .proto
+
+// oneof either takes a message that is string, 
+// or a message that is int32.
+message Result {
+    oneof result {
+        string message = 1;
+        uint32 id = 2;
+    }
+}
+
+# .go
+func getOneOf(msg any) {
+	switch x := msg.(type) {
+	case *pb.Result_Id:
+		fmt.Println(msg.(*pb.Result_Id).Id)
+	case *pb.Result_Message:
+		fmt.Println(msg.(*pb.Result_Message).Message)
+	default:
+		fmt.Printf("msg has unexpected type %v\n", x)
+	}
+}
+```
+
+### Maps
+```
+# .proto
+
+// IdWrapper is the value of the key-value pair in a map.
+// So the type of the wrapper will be the type of the value
+// of the map.
+message IdWrapper {
+    uint32 id = 1;
+}
+
+// MapExample is a map[string]uint32
+message MapExample {
+    map<string, IdWrapper> ids = 1;
+}
+
+# .go
+func getMap() *pb.MapExample {
+	return &pb.MapExample{
+		Ids: map[string]*pb.IdWrapper{
+			"key1": {Id: 1},
+			"key2": {Id: 2},
+			"key3": {Id: 4},
+			"key4": {Id: 5},
+		},
+	}
+}
+```

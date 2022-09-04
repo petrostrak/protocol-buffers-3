@@ -219,7 +219,7 @@ func getComplex() *pb.Complex {
 }
 ```
 
-### A enum proto struct example
+### An enum proto struct example
 ```
 # .proto
 enum EyeColor {
@@ -368,7 +368,7 @@ func callfromJSON(json string, t reflect.Type) proto.Message {
 }
 
 {
-    // Example, decode to pb.Simple struct.
+    // Example, decode JSON to pb.Simple struct.
     msg := callfromJSON(json, reflect.TypeOf(pb.Simple{}))
     // ...
 }

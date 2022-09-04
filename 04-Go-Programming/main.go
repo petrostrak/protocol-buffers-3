@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	pb "proto-go-programming/proto"
+	"reflect"
 
 	"google.golang.org/protobuf/proto"
 )
@@ -67,12 +68,33 @@ func doFile(p proto.Message) {
 	fmt.Println(msg)
 }
 
+func doToJSON(p proto.Message) string {
+	return toJSON(p)
+}
+
+func doFromJSON(json string, t reflect.Type) proto.Message {
+	msg := reflect.New(t).Interface().(proto.Message)
+	fromJSON(json, msg)
+
+	return msg
+}
+
 func main() {
-	fmt.Println(doSimple())
-	fmt.Println(doComplex())
-	fmt.Println(doEnum())
-	doOneOf(&pb.Result_Id{Id: 1})
-	doOneOf(&pb.Result_Message{Message: "hello"})
-	fmt.Println(doMap())
-	doFile(doSimple())
+	// fmt.Println(doSimple())
+	// fmt.Println(doComplex())
+	// fmt.Println(doEnum())
+	// doOneOf(&pb.Result_Id{Id: 1})
+	// doOneOf(&pb.Result_Message{Message: "hello"})
+	// fmt.Println(doMap())
+	// doFile(doSimple())
+
+	json := doToJSON(doSimple())
+	msg := doFromJSON(json, reflect.TypeOf(pb.Simple{}))
+	fmt.Println(json)
+	fmt.Println(msg)
+
+	json = doToJSON(doComplex())
+	msg = doFromJSON(json, reflect.TypeOf(pb.Complex{}))
+	fmt.Println(json)
+	fmt.Println(msg)
 }

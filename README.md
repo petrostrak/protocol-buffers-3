@@ -331,3 +331,45 @@ func readFromFile(filename string, pb proto.Message) {
 	}
 }
 ```
+
+### Reading and Writing to JSON
+#### Encode to JSON
+```
+func toJSON(pb proto.Message) string {
+	option := protojson.MarshalOptions{
+		Multiline: true,
+	}
+	out, err := option.Marshal(pb)
+	if err != nil {
+		log.Fatalln("cannot encode to JSON", err)
+		return ""
+	}
+	return string(out)
+}
+```
+
+#### Decode from JSON
+```
+func fromJSON(in string, pb proto.Message) {
+	option := protojson.UnmarshalOptions{
+		DiscardUnknown: true,
+	}
+	err := option.Unmarshal([]byte(in), pb)
+	if err != nil {
+		log.Fatalln("cannot decode JSON to pb", err)
+		return
+	}
+}
+
+func callfromJSON(json string, t reflect.Type) proto.Message {
+	message := reflect.New(t).Interface().(proto.Message)
+	fromJSON(json, message)
+	return message
+}
+
+{
+    // Example, decode to pb.Simple struct.
+    msg := callfromJSON(json, reflect.TypeOf(pb.Simple{}))
+    // ...
+}
+```

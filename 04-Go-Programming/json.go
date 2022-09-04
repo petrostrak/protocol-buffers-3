@@ -8,7 +8,10 @@ import (
 )
 
 func toJSON(pb proto.Message) string {
-	out, err := protojson.Marshal(pb)
+	option := protojson.MarshalOptions{
+		Multiline: true,
+	}
+	out, err := option.Marshal(pb)
 	if err != nil {
 		log.Fatalln("cannot encode to JSON", err)
 		return ""

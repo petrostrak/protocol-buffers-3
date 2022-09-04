@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	pb "proto-go-programming/proto"
+
+	"google.golang.org/protobuf/proto"
 )
 
 func doSimple() *pb.Simple {
@@ -57,6 +59,14 @@ func doMap() *pb.MapExample {
 	}
 }
 
+func doFile(p proto.Message) {
+	path := "simple.bin"
+	writeToFile(path, p)
+	msg := &pb.Simple{}
+	readFromFile(path, msg)
+	fmt.Println(msg)
+}
+
 func main() {
 	fmt.Println(doSimple())
 	fmt.Println(doComplex())
@@ -64,4 +74,5 @@ func main() {
 	doOneOf(&pb.Result_Id{Id: 1})
 	doOneOf(&pb.Result_Message{Message: "hello"})
 	fmt.Println(doMap())
+	doFile(doSimple())
 }

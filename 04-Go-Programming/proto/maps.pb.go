@@ -20,6 +20,9 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// IdWrapper is the value of the key-value pair in a map.
+// So the type of the wrapper will be the type of the value
+// of the map.
 type IdWrapper struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -67,6 +70,7 @@ func (x *IdWrapper) GetId() uint32 {
 	return 0
 }
 
+// MapExample is a map[string]uint32
 type MapExample struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

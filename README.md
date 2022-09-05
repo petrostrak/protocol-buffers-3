@@ -382,7 +382,7 @@ A more detailed guide about updating a message type can be found [here](https://
 We can rename fields freely when we want to update a `.proto` file. Remember that the only thing that matters when serializing or deserializing a proto message is the tags, not the name.
 
 #### Removing Fields
-If we want to remove an existing field for our newer `.proto` version, we use the keyword `reserved` before the number tag and optionaly before the name. In this way, we prevent the tag and name for future use.
+If we want to remove an existing field for our newer `.proto` version, we use the keyword `reserved` before the number tag and optionally before the name. In this way, we prevent the tag and name for future use.
 ```
 message Example {
 	reserved 2,3,9 to 11; // 9 and 11 including
@@ -390,6 +390,7 @@ message Example {
 	uint32 id = 1;
 }
 ```
+<<<<<<< HEAD
 
 ### --decode_raw option
 With the `--decode_raw` command we can serialize any message that is in binary and check the tags and the values.
@@ -411,3 +412,5 @@ message Simple {
 3: "My name"
 4: "\001\002\003\004\005\006"
 ```
+=======
+>>>>>>> f44db3f2b2f1e24031068422d3776bd20388d0d0

@@ -377,3 +377,16 @@ func pbfromJSON(json string, t reflect.Type) proto.Message {
 ### Data Evolution with Protobuf
 The most important rule when it comes to updating a `.proto` file is **not to change the number tags** of the existing fields. 
 A more detailed guide about updating a message type can be found [here](https://developers.google.com/protocol-buffers/docs/proto3?hl=en#updating).
+
+#### Renaming Fields
+We can rename fields freely when we want to update a `.proto` file. Remember that the only thing that matters when serializing or deserializing a proto message is the tags, not the name.
+
+#### Removing Fields
+If we want to remove an existing field for our newer `.proto` version, we use the keyword `reserved` before the number tag and optionaly before the name. In this way, we prevent the tag and name for future use.
+```
+message Example {
+	reserved 2,3,9 to 11; // 9 and 11 including
+	reserved "first_name", "last_name";
+	uint32 id = 1;
+}
+```

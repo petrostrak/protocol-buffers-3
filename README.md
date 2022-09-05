@@ -391,7 +391,7 @@ message Example {
 }
 ```
 ### --decode_raw option
-With the `--decode_raw` command we can deserialize any message that is in binary and check the tags and the values.
+The `--decode_raw` command reads an arbitrary protocol message from standard input and writes the raw tag/value pairs in text format to standard output.
 ```
 # .proto
 message Simple {
@@ -404,7 +404,7 @@ message Simple {
 # .bin
 *My name"
 
-# cat simple.bin | protoc --decode_raw
+$ cat simple.bin | protoc --decode_raw
 1: 42
 2: 1
 3: "My name"
@@ -412,7 +412,7 @@ message Simple {
 ```
 
 ### --decode option
-With the `--decode` command we can deserialize any message that is in binary into a given proto message. 
+The `--decode` command reads a binary message of the given type from standard input and writes it in text format to standard output.  The message type must be defined in PROTO_FILES or their imports.. 
 ```
 # .proto
 message Simple {
@@ -425,7 +425,7 @@ message Simple {
 # .bin
 *My name"
 
-# cat simple.bin | protoc --decode=Simple simple.proto
+$ cat simple.bin | protoc --decode=Simple simple.proto
 id: 42
 is_simple: true
 name: "My name"
@@ -437,3 +437,27 @@ sample_list: 5
 sample_list: 6
 ```
 <sub>In case the `.proto` file is defined in a package e.g. simple, then the --decode parameter changes. E.g. `cat simple.bin | protoc --decode=simple.Simple simple.proto`</sub>
+
+### --encode
+The `--encode` command reads a text-format message of the given type from standard input and writes it in binary to standard output.
+```
+$ cat simple.bin | protoc --decode=Simple simple.proto > simple.txt
+id: 42
+is_simple: true
+name: "My name"
+sample_list: 1
+sample_list: 2
+sample_list: 3
+sample_list: 4
+sample_list: 5
+sample_list: 6
+
+$ cat simple.bin | protoc --decode=Simple simple.proto > simple.txt
+$ cat simple.txt | protoc --encode=Simple simple.proto > simple.pb
+
+# simple.pb
+*My name"
+
+# To check that the encoded message is the same with the source
+$ diff simple.bin simple.pb
+```

@@ -391,7 +391,7 @@ message Example {
 }
 ```
 ### --decode_raw option
-With the `--decode_raw` command we can serialize any message that is in binary and check the tags and the values.
+With the `--decode_raw` command we can deserialize any message that is in binary and check the tags and the values.
 ```
 # .proto
 message Simple {
@@ -412,7 +412,7 @@ message Simple {
 ```
 
 ### --decode option
-With the `--decode` command we can serialize any message that is in binary into a given proto message. 
+With the `--decode` command we can deserialize any message that is in binary into a given proto message. 
 ```
 # .proto
 message Simple {
@@ -436,3 +436,4 @@ sample_list: 4
 sample_list: 5
 sample_list: 6
 ```
+<sub>In case the `.proto` file is defined in a package e.g. simple, then the --decode parameter changes. E.g. `cat simple.bin | protoc --decode=simple.Simple simple.proto`</sub>

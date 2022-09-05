@@ -13,7 +13,7 @@ package tutorial;
 import "google/protobuf/timestamp.proto";
 
 // [START go_declaration]
-option go_package = "github.com/protocolbuffers/protobuf/examples/go/tutorialpb";
+option go_package = "address-book/proto";
 // [END go_declaration]
 
 // [START messages]

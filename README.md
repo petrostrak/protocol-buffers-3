@@ -410,3 +410,29 @@ message Simple {
 3: "My name"
 4: "\001\002\003\004\005\006"
 ```
+
+### --decode option
+With the `--decode` command we can serialize any message that is in binary into a given proto message. 
+```
+# .proto
+message Simple {
+    uint32 id = 1;
+    bool is_simple = 2;
+    string name = 3;
+    repeated int32 sample_list = 4;
+}
+
+# .bin
+*My name"
+
+# cat simple.bin | protoc --decode=Simple simple.proto
+id: 42
+is_simple: true
+name: "My name"
+sample_list: 1
+sample_list: 2
+sample_list: 3
+sample_list: 4
+sample_list: 5
+sample_list: 6
+```

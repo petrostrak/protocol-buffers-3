@@ -390,8 +390,6 @@ message Example {
 	uint32 id = 1;
 }
 ```
-<<<<<<< HEAD
-
 ### --decode_raw option
 With the `--decode_raw` command we can serialize any message that is in binary and check the tags and the values.
 ```
@@ -412,5 +410,3 @@ message Simple {
 3: "My name"
 4: "\001\002\003\004\005\006"
 ```
-=======
->>>>>>> f44db3f2b2f1e24031068422d3776bd20388d0d0

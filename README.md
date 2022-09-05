@@ -390,3 +390,24 @@ message Example {
 	uint32 id = 1;
 }
 ```
+
+### --decode_raw option
+With the `--decode_raw` command we can serialize any message that is in binary and check the tags and the values.
+```
+# .proto
+message Simple {
+    uint32 id = 1;
+    bool is_simple = 2;
+    string name = 3;
+    repeated int32 sample_list = 4;
+}
+
+# .bin
+*My name"
+
+# cat simple.bin | protoc --decode_raw
+1: 42
+2: 1
+3: "My name"
+4: "\001\002\003\004\005\006"
+```

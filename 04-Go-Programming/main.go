@@ -68,11 +68,11 @@ func doFile(p proto.Message) {
 	fmt.Println(msg)
 }
 
-func doToJSON(p proto.Message) string {
+func pbToJSON(p proto.Message) string {
 	return toJSON(p)
 }
 
-func doFromJSON(json string, t reflect.Type) proto.Message {
+func pbFromJSON(json string, t reflect.Type) proto.Message {
 	msg := reflect.New(t).Interface().(proto.Message)
 	fromJSON(json, msg)
 
@@ -88,13 +88,13 @@ func main() {
 	// fmt.Println(doMap())
 	// doFile(doSimple())
 
-	json := doToJSON(doSimple())
-	msg := doFromJSON(json, reflect.TypeOf(pb.Simple{}))
+	json := pbToJSON(doSimple())
+	msg := pbFromJSON(json, reflect.TypeOf(pb.Simple{}))
 	fmt.Println(json)
 	fmt.Println(msg)
 
-	json = doToJSON(doComplex())
-	msg = doFromJSON(json, reflect.TypeOf(pb.Complex{}))
+	json = pbToJSON(doComplex())
+	msg = pbFromJSON(json, reflect.TypeOf(pb.Complex{}))
 	fmt.Println(json)
 	fmt.Println(msg)
 }

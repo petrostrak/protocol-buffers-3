@@ -361,7 +361,7 @@ func fromJSON(in string, pb proto.Message) {
 	}
 }
 
-func callfromJSON(json string, t reflect.Type) proto.Message {
+func pbfromJSON(json string, t reflect.Type) proto.Message {
 	message := reflect.New(t).Interface().(proto.Message)
 	fromJSON(json, message)
 	return message
@@ -369,7 +369,11 @@ func callfromJSON(json string, t reflect.Type) proto.Message {
 
 {
     // Example, decode JSON to pb.Simple struct.
-    msg := callfromJSON(json, reflect.TypeOf(pb.Simple{}))
+    msg := pbfromJSON(json, reflect.TypeOf(pb.Simple{}))
     // ...
 }
 ```
+
+### Data Evolution with Protobuf
+The most important rule when it comes to updating a `.proto` file is **not to change the number tags** of the existing fields. 
+A more detailed guide about updating a message type can be found [here](https://developers.google.com/protocol-buffers/docs/proto3?hl=en#updating).

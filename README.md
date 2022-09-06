@@ -30,6 +30,8 @@ sudo chown -R [user] /usr/local/include/google
 ### Protobuf Scalar Types
 There are 15 different scalar types we can use in protocol buffers. 
 
+A list of the Protocol Buffers well-known types can be found [here](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#index).
+
 | Type | Keyword | Default value |
 | :---        |    :----:   |          ---: |
 |Number|int32,int64,sint32,sint64,uint32,uint64,fixed32,fixed64,sfixed32,sfixed64,float,double|0|
@@ -276,6 +278,7 @@ func getOneOf(msg any) {
 	}
 }
 ```
+<sub>oneof cannot be repeated.</sub>
 
 ### Maps
 ```
@@ -305,6 +308,7 @@ func getMap() *pb.MapExample {
 	}
 }
 ```
+<sub>Maps cannot be repeated and cannot use float, double or enums as keys.</sub>
 
 ### Reading and Writing to Disk
 #### Write to file with proto

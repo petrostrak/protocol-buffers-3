@@ -38,7 +38,16 @@ There are 15 different scalar types we can use in protocol buffers.
 |Bytes|bytes|empty byte slice|
 |Enums|enum|first value of the enum|
 
-<sub>Strings only accept UTF-8 encoded or 7-bit ASCII</sub>
+<sub>Strings only accept UTF-8 encoded or 7-bit ASCII.</sub>
+
+#### Integers
+* uint32, uint 64: no negative value.
+* int32, int64: accept negative value (but not efficient at serializing)
+* sint32, sint64: accept negative value (but less efficient at serializing)
+* fixed32, sfixed32: 4 bytes 
+* fixed64, sfixes64: 8 bytes
+
+<sub>sfixed are signed integers.</sub>
 
 ### Enums
 Specifically for `Enums` the tag number starts at 0.

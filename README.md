@@ -481,7 +481,7 @@ Protocol Buffers Options are defined in the [descriptor.proto](https://github.co
 The `descriptor.proto` defines the metadata for the proto files, messages, enums et cetera.
 
 ### Services
-A `services` is quite generic in protocol buffers and it's not designed for serialization and the serialization. Instead it is designed for *communication*.
+A `service` is quite generic in protocol buffers and it's not designed for serialization and the serialization. Instead it is designed for *communication*.
 
 Services are a set of endpoints that are defining an API. A contract for RPC framework. Then with this framework we send serialized messages and these messages will automatically  be deserialized into objects that we can use on the server side or on the client side.
 ```

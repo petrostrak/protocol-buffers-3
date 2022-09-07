@@ -308,7 +308,7 @@ func getMap() *pb.MapExample {
 	}
 }
 ```
-<sub>Maps cannot be repeated and cannot use float, double or enums as keys.</sub>
+<sub>Maps cannot be repeated and cannot use float, double or enums for keys.</sub>
 
 ### Reading and Writing to Disk
 #### Write to file with proto
@@ -474,3 +474,8 @@ $ cat simple.txt | protoc --encode=Simple simple.proto > simple.pb
 # To check that the encoded message is the same with the source
 $ diff simple.bin simple.pb
 ```
+
+### Protocol Buffers Options
+Protocol Buffers Options are defined in the [descriptor.proto](https://github.com/protocolbuffers/protobuf/blob/main/src/google/protobuf/descriptor.proto) file.
+
+The `descriptor.proto` defines the metadata for the proto files, messages, enums et cetera.

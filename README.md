@@ -1,4 +1,4 @@
-## protocol buffers 3
+## Protocol buffers 3 and gRPC in Golang
 
 Protocol Buffers (protobuf) is a fundamental data serialization format. It is leveraged by many top tech companies such as Google and enables micro-services to transfer data in a format that is safe and efficient. 
 

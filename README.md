@@ -625,3 +625,17 @@ service FooService {
 - SSL security is built in.
 - Support for streaming APIs for maximum performance.
 - gRPC is API oriented, instead of Resource Oriented like REST.
+
+### Generate Go code with `dummy.proto` file for chapter 07 greet project.
+```
+protoc -Igreet/proto --go_out=. --go_opt=module=07-grpc-greet-project  --go-grpc_out=. --go-grpc_opt=module=07-grpc-greet-project  greet/proto/dummy.proto
+```
+Breaking down the above command:
+
+* `protoc` calls the protocol buffer compiler executable.
+* `-I` helps protoc to find the import.
+* `--go_out=` is where we want to generate the code.
+* `--go-grpc_out=` is where we want to generate the gRPC code.
+* `--go_opt=module=` is an option to inform the protoc that a go mod exists.
+* `--go-grpc_opt=module=` is an option to inform the protoc that a go mod exists.
+* `greet/proto/dummy.proto` the path to the `.proto` file.

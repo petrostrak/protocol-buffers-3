@@ -1,8 +1,6 @@
-<<<<<<< HEAD
-# protocol buffers 3
-=======
-## Protocol buffers 3 and gRPC in Golang
->>>>>>> ec819da02e8a690bf4ffd3bde9cb8bdd1e21be98
+# Protocol buffers 3 and gRPC in Golang
+
+## Protocol buffers 3
 
 Protocol Buffers (protobuf) is a fundamental data serialization format. It is leveraged by many top tech companies such as Google and enables micro-services to transfer data in a format that is safe and efficient. 
 
@@ -508,7 +506,7 @@ service FooService {
 }
 ```
 
-# gRPC
+## gRPC
 - An RPC is a Remote Procedure Call.
 - In your CLIENT code, it looks like you're just calling a function directly on the SERVER.
 

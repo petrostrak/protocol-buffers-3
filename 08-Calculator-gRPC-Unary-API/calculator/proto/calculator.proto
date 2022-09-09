@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package calculator;
+
+option go_package = "calculator-grpc-unary-api/calculator/proto";
+
+message CalculatorRequest {
+    int32 a = 1;
+    int32 b = 2;
+}
+
+message CalculatorResponse {
+    int32 result = 1;
+}
+
+service CalculatorService {
+    rpc Calculate(CalculatorRequest) returns (CalculatorResponse);
+}

@@ -643,12 +643,8 @@ Breaking down the above command:
 ### Create a minimal gRPC server and client
 #### Server
 ```
-var (
-	addr = "0.0.0.0:50051"
-)
+var addr = "0.0.0.0:50051"
 
-// Import generated code from proto file
-// pb "07-grpc-greet-project/greet/proto"
 type Server struct {
 	pb.GreetServiceServer
 }
@@ -656,30 +652,66 @@ type Server struct {
 func main() {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Fatalf("failed to listen on: %v\n", err)
+		log.Printf("failed to listen on: %v\n", err)
 	}
 
 	log.Printf("Listening on %s\n", addr)
 
 	s := grpc.NewServer()
+
 	if err = s.Serve(l); err != nil {
-		log.Fatalf("failed to serve: %v\n", err)
+		log.Printf("failed to serve: %v\n", err)
 	}
 }
 ```
 #### Client
 ```
-var (
-	addr = "0.0.0.0:50051"
-)
+var addr = "0.0.0.0:50051"
 
 func main() {
-    
-    // gRPC uses SSL by default, thats why we need to use Dial Option WithTransportCredentials.
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("failed to connect: %v\n", err)
+		log.Printf("failed to connect: %v\n", err)
 	}
 	defer conn.Close()
+}
+```
+
+### Unary API 
+#### Server Implementation
+```
+func main() {
+	...
+	pb.RegisterGreetServiceServer(s, &Server{})
+	...
+}
+
+// Implementation of the Greet API.
+func (s *Server) Greet(ctx context.Context, in *pb.GreetRequest) (*pb.GreetResponse, error) {
+	log.Printf("Greet function was invoked with %v\n", in)
+	return &pb.GreetResponse{
+		Result: "Hello " + in.FirstName,
+	}, nil
+}
+```
+
+#### Client Implementation
+```
+func main() {
+	...
+	c := pb.NewGreetServiceClient(conn)
+
+	greet(c)
+}
+
+func greet(c pb.GreetServiceClient) {
+	res, err := c.Greet(context.Background(), &pb.GreetRequest{
+		FirstName: "Petros",
+	})
+	if err != nil {
+		log.Printf("Could not greet: %v\n", err)
+	}
+
+	log.Printf("Greetin: %s", res.Result)
 }
 ```

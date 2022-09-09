@@ -16,7 +16,7 @@ var (
 func main() {
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("failed to connect: %v\n", err)
+		log.Printf("failed to connect: %v\n", err)
 	}
 	defer conn.Close()
 

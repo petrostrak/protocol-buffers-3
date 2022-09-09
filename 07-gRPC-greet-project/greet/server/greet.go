@@ -7,8 +7,8 @@ import (
 )
 
 func (s *Server) Greet(ctx context.Context, in *pb.GreetRequest) (*pb.GreetResponse, error) {
-	log.Panicf("Greet function was invoked with %v\n", in)
+	log.Printf("Greet function was invoked with %v\n", in)
 	return &pb.GreetResponse{
-		Result: "Hello" + in.FirstName,
+		Result: "Hello " + in.FirstName,
 	}, nil
 }

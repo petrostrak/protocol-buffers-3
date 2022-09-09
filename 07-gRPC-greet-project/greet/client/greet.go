@@ -12,8 +12,8 @@ func greet(c pb.GreetServiceClient) {
 		FirstName: "Petros",
 	})
 	if err != nil {
-		log.Fatalf("Could not greet: %v\n", err)
+		log.Printf("Could not greet: %v\n", err)
 	}
 
-	log.Panicf("Greetin: %s", res.Result)
+	log.Printf("Greetin: %s", res.Result)
 }

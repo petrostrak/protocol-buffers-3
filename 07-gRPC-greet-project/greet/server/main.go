@@ -19,7 +19,7 @@ type Server struct {
 func main() {
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Fatalf("failed to listen on: %v\n", err)
+		log.Printf("failed to listen on: %v\n", err)
 	}
 
 	log.Printf("Listening on %s\n", addr)
@@ -28,6 +28,6 @@ func main() {
 	pb.RegisterGreetServiceServer(s, &Server{})
 
 	if err = s.Serve(l); err != nil {
-		log.Fatalf("failed to serve: %v\n", err)
+		log.Printf("failed to serve: %v\n", err)
 	}
 }

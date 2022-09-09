@@ -639,3 +639,47 @@ Breaking down the above command:
 * `--go_opt=module=` is an option to inform the protoc that a go mod exists.
 * `--go-grpc_opt=module=` is an option to inform the protoc that a go mod exists.
 * `greet/proto/dummy.proto` the path to the `.proto` file.
+
+### Create a minimal gRPC server and client
+#### Server
+```
+var (
+	addr = "0.0.0.0:50051"
+)
+
+// Import generated code from proto file
+// pb "07-grpc-greet-project/greet/proto"
+type Server struct {
+	pb.GreetServiceServer
+}
+
+func main() {
+	l, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Fatalf("failed to listen on: %v\n", err)
+	}
+
+	log.Printf("Listening on %s\n", addr)
+
+	s := grpc.NewServer()
+	if err = s.Serve(l); err != nil {
+		log.Fatalf("failed to serve: %v\n", err)
+	}
+}
+```
+#### Client
+```
+var (
+	addr = "0.0.0.0:50051"
+)
+
+func main() {
+    
+    // gRPC uses SSL by default, thats why we need to use Dial Option WithTransportCredentials.
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect: %v\n", err)
+	}
+	defer conn.Close()
+}
+```

@@ -628,7 +628,7 @@ service FooService {
 
 ### Generate Go code with `dummy.proto` file for chapter 07 greet project.
 ```
-protoc -Igreet/proto --go_out=. --go_opt=module=07-grpc-greet-project  --go-grpc_out=. --go-grpc_opt=module=07-grpc-greet-project  greet/proto/dummy.proto
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative  greet/proto/dummy.proto
 ```
 Breaking down the above command:
 
@@ -636,8 +636,8 @@ Breaking down the above command:
 * `-I` helps protoc to find the import.
 * `--go_out=` is where we want to generate the code.
 * `--go-grpc_out=` is where we want to generate the gRPC code.
-* `--go_opt=module=` is an option to inform the protoc that a go mod exists.
-* `--go-grpc_opt=module=` is an option to inform the protoc that a go mod exists.
+* `----go_opt=paths=source_relative=` enables the gRPC plugin, then code will be generated to support gRPC.
+* `--go-grpc_opt=paths=source_relative=` enables the gRPC plugin, then code will be generated to support gRPC.
 * `greet/proto/dummy.proto` the path to the `.proto` file.
 
 ### Create a minimal gRPC server and client

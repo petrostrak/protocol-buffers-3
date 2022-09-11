@@ -12,3 +12,22 @@ func (s *Server) Calculate(ctx context.Context, in *pb.CalculatorRequest) (*pb.C
 		Result: in.A + in.B,
 	}, nil
 }
+
+func (s *Server) CalculatePrimes(in *pb.CalculatorRequest, stream pb.CalculatorService_CalculatePrimesServer) error {
+	log.Printf("CalculatePrimes() invoked with %v\n", in)
+
+	var k int32 = 2
+	var N int32 = in.A
+	for N > 1 {
+		if N%k == 0 {
+			stream.Send(&pb.CalculatorResponse{
+				Result: k,
+			})
+			N = N / k
+		} else {
+			k = k + 1
+		}
+	}
+
+	return nil
+}

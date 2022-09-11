@@ -15,4 +15,5 @@ message CalculatorResponse {
 
 service CalculatorService {
     rpc Calculate(CalculatorRequest) returns (CalculatorResponse);
+    rpc CalculatePrimes (CalculatorRequest) returns (stream CalculatorResponse);
 }

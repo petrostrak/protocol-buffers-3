@@ -688,7 +688,6 @@ func main() {
 
 // Implementation of the Greet API.
 func (s *Server) Greet(ctx context.Context, in *pb.GreetRequest) (*pb.GreetResponse, error) {
-	log.Printf("Greet function was invoked with %v\n", in)
 	return &pb.GreetResponse{
 		Result: "Hello " + in.FirstName,
 	}, nil
@@ -728,8 +727,6 @@ service GreetService {
 ```
 // Implementation of the Streaming Server API.
 func (s *Server) GreetManyTimes(in *pb.GreetRequest, stream pb.GreetService_GreetManyTimesServer) error {
-	log.Printf("GreetManyTimes() invoked with: %v\n", in)
-
 	for i := 0; i < 10; i++ {
 		res := fmt.Sprintf("Hello %s, number %d", in.FirstName, i)
 
@@ -749,8 +746,6 @@ func main() {
 }
 
 func doGreetManyTimes(c pb.GreetServiceClient) {
-	log.Println("doGreetManyTimes() invoked!")
-
 	req := &pb.GreetRequest{
 		FirstName: "Petros",
 	}
@@ -791,5 +786,39 @@ func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
 		log.Printf("Receiving: %v\n", req)
 		res += fmt.Sprintf("Hello %s!\n", req.FirstName)
 	}
+}
+```
+#### Client Implementation
+```
+func main() {
+	...
+	doLongGreet(c)
+}
+
+func doLongGreet(c pb.GreetServiceClient) {
+	reqs := []*pb.GreetRequest{
+		{FirstName: "Petros"},
+		{FirstName: "Eirini"},
+		{FirstName: "Maggie"},
+	}
+
+	stream, err := c.LongGreet(context.Background())
+	if err != nil {
+		log.Printf("error while calling LongGreet: %v\n", err)
+	}
+
+	for _, req := range reqs {
+		log.Printf("sending req: %v\n", req)
+
+		stream.Send(req)
+		time.Sleep(time.Second)
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Printf("error while receiving response from LongGreet: %v\n", err)
+	}
+
+	log.Printf("LongGreet: %s\n", res.Result)
 }
 ```

@@ -770,6 +770,13 @@ func doGreetManyTimes(c pb.GreetServiceClient) {
 ### Client Streaming API
 #### Server Implementation
 ```
+# in .proto file add the streaming client API
+service GreetService {
+	...
+    rpc LongGreet (stream GreetRequest) returns (GreetResponse);
+}
+```
+```
 // Client Streaming Server Implementation
 func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
 	res := ""

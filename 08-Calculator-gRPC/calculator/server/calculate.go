@@ -3,6 +3,7 @@ package main
 import (
 	pb "calculator-grpc-unary-api/calculator/proto"
 	"context"
+	"io"
 	"log"
 )
 
@@ -30,4 +31,28 @@ func (s *Server) CalculatePrimes(in *pb.CalculatorRequest, stream pb.CalculatorS
 	}
 
 	return nil
+}
+
+func (s *Server) CalculateAverage(stream pb.CalculatorService_CalculateAverageServer) error {
+	log.Printf("CalculateAverage() invoked with %v\n", stream)
+
+	var sum int32 = 0
+	var counter int32 = 0
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.CalculatorResponse{
+				Result: sum / counter,
+			})
+		} else if err != nil {
+			log.Printf("error while reading client stream: %v\n", err)
+		}
+
+		sum += req.A
+		counter++
+		log.Printf("Received: %d\n", req.A)
+		log.Printf("Sum: %d", sum)
+		log.Printf("Counter: %d", counter)
+	}
 }

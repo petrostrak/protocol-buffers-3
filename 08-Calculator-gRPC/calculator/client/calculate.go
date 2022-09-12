@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"time"
 )
 
 func calculate(c pb.CalculatorServiceClient) {
@@ -42,4 +43,35 @@ func calculatePrimes(c pb.CalculatorServiceClient) {
 
 		log.Printf("CalculatePrimes: %d\n", prime.Result)
 	}
+}
+
+func calculateAverage(c pb.CalculatorServiceClient) {
+	log.Println("calculatePrimes() invoked!")
+
+	requests := []*pb.CalculatorRequest{
+		{A: 3},
+		{A: 9},
+		{A: 12},
+		{A: 31},
+		{A: 4},
+	}
+
+	stream, err := c.CalculateAverage(context.Background())
+	if err != nil {
+		log.Printf("error while calling CalculateAverage: %v\n", err)
+	}
+
+	for _, req := range requests {
+		log.Printf("sending number: %d\n", req.A)
+
+		stream.Send(req)
+		time.Sleep(time.Second)
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Printf("error while receiving response from CalculateAverage: %v\n", err)
+	}
+
+	log.Printf("CalculateAverage: %d\n", res.Result)
 }

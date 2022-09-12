@@ -31,6 +31,7 @@ func (s *Server) GreetManyTimes(in *pb.GreetRequest, stream pb.GreetService_Gree
 	return nil
 }
 
+// Client Streaming Server Implementation
 func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
 	log.Printf("GreetManyTimes() invoked with: %v\n", stream)
 

@@ -4,6 +4,7 @@ import (
 	pb "07-grpc-greet-project/greet/proto"
 	"context"
 	"fmt"
+	"io"
 	"log"
 )
 
@@ -28,4 +29,23 @@ func (s *Server) GreetManyTimes(in *pb.GreetRequest, stream pb.GreetService_Gree
 	}
 
 	return nil
+}
+
+func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
+	log.Printf("GreetManyTimes() invoked with: %v\n", stream)
+
+	res := ""
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.GreetResponse{
+				Result: res,
+			})
+		} else if err != nil {
+			log.Printf("error while reading client stream: %v\n", err)
+		}
+
+		res += fmt.Sprintf("Hello %s!\n", req.FirstName)
+	}
 }

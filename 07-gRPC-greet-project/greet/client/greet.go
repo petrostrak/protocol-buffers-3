@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"time"
 )
 
 func greet(c pb.GreetServiceClient) {
@@ -41,4 +42,33 @@ func doGreetManyTimes(c pb.GreetServiceClient) {
 
 		log.Printf("GreetManyTimes: %s\n", msg.Result)
 	}
+}
+
+func doLongGreet(c pb.GreetServiceClient) {
+	log.Println("doLongGreet() invoked!")
+
+	reqs := []*pb.GreetRequest{
+		{FirstName: "Petros"},
+		{FirstName: "Eirini"},
+		{FirstName: "Maggie"},
+	}
+
+	stream, err := c.LongGreet(context.Background())
+	if err != nil {
+		log.Printf("error while calling LongGreet: %v\n", err)
+	}
+
+	for _, req := range reqs {
+		log.Printf("sending req: %v\n", req)
+
+		stream.Send(req)
+		time.Sleep(time.Second)
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Printf("error while receiving response from LongGreet: %v\n", err)
+	}
+
+	log.Printf("LongGreet: %s\n", res.Result)
 }

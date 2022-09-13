@@ -911,3 +911,52 @@ func doGreetEveryone(c pb.GreetServiceClient) {
 	<-waitChan
 }
 ```
+### Error Handling in gRPC
+To return an gRPC error we make use of the `status` package from `google.golang.org/grpc/status`. This package provides us with many helpful methods, one of which is called `.Errorf(c codes.Code, format string, a ...any)`. 
+
+For this method, we need to provide the error code, e.g. Aborted, AlreadyExists, InvalidArgument using the `codes` package from `google.golang.org/grpc/codes` and a string with the given message of the error.
+
+#### Server-side Error Handling
+```
+func (s *Server) CalculateSquareRoot(ctx context.Context, in *pb.SqrtRequest) (*pb.SqrtResponse, error) {
+	number := in.Number
+
+	if number < 0 {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			fmt.Sprintf("Received a negatice number: %d", number),
+		)
+	}
+
+	return &pb.SqrtResponse{
+		Result: math.Sqrt(float64(in.Number)),
+	}, nil
+}
+```
+#### Client-side Error Handling
+In client-side, we can check the errors coming from the server with the use of `.FromError(e errors)` from the `status` package from `google.golang.org/grpc/status`. This method returns the status of the error (code and message that were defined in the server previously) and a bool that tells us whether the error is an gRPC error or not. 
+```
+func calculateSqrt(c pb.CalculatorServiceClient, n int32) {
+	res, err := c.CalculateSquareRoot(context.Background(), &pb.SqrtRequest{
+		Number: n,
+	})
+	if err != nil {
+		// ok tells us if it is a gRPC error
+		e, ok := status.FromError(err)
+		if ok {
+			// gRPC error
+			log.Printf("error message from server: %s\n", e.Message())
+			log.Printf("error code from server: %s\n", e.Code())
+
+			if e.Code() == codes.InvalidArgument {
+				log.Println("We probable sent a negative number!")
+				return
+			}
+		} else {
+			log.Printf("A non gRPC error: %v\n", err)
+		}
+	}
+
+	log.Printf("Sqrt: %f\n", res.Result)
+}
+```

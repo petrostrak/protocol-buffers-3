@@ -25,6 +25,7 @@ type CalculatorServiceClient interface {
 	Calculate(ctx context.Context, in *CalculatorRequest, opts ...grpc.CallOption) (*CalculatorResponse, error)
 	CalculatePrimes(ctx context.Context, in *CalculatorRequest, opts ...grpc.CallOption) (CalculatorService_CalculatePrimesClient, error)
 	CalculateAverage(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_CalculateAverageClient, error)
+	CalculateMax(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_CalculateMaxClient, error)
 }
 
 type calculatorServiceClient struct {
@@ -110,6 +111,37 @@ func (x *calculatorServiceCalculateAverageClient) CloseAndRecv() (*CalculatorRes
 	return m, nil
 }
 
+func (c *calculatorServiceClient) CalculateMax(ctx context.Context, opts ...grpc.CallOption) (CalculatorService_CalculateMaxClient, error) {
+	stream, err := c.cc.NewStream(ctx, &CalculatorService_ServiceDesc.Streams[2], "/calculator.CalculatorService/CalculateMax", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &calculatorServiceCalculateMaxClient{stream}
+	return x, nil
+}
+
+type CalculatorService_CalculateMaxClient interface {
+	Send(*CalculatorRequest) error
+	Recv() (*CalculatorResponse, error)
+	grpc.ClientStream
+}
+
+type calculatorServiceCalculateMaxClient struct {
+	grpc.ClientStream
+}
+
+func (x *calculatorServiceCalculateMaxClient) Send(m *CalculatorRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *calculatorServiceCalculateMaxClient) Recv() (*CalculatorResponse, error) {
+	m := new(CalculatorResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // CalculatorServiceServer is the server API for CalculatorService service.
 // All implementations must embed UnimplementedCalculatorServiceServer
 // for forward compatibility
@@ -117,6 +149,7 @@ type CalculatorServiceServer interface {
 	Calculate(context.Context, *CalculatorRequest) (*CalculatorResponse, error)
 	CalculatePrimes(*CalculatorRequest, CalculatorService_CalculatePrimesServer) error
 	CalculateAverage(CalculatorService_CalculateAverageServer) error
+	CalculateMax(CalculatorService_CalculateMaxServer) error
 	mustEmbedUnimplementedCalculatorServiceServer()
 }
 
@@ -132,6 +165,9 @@ func (UnimplementedCalculatorServiceServer) CalculatePrimes(*CalculatorRequest, 
 }
 func (UnimplementedCalculatorServiceServer) CalculateAverage(CalculatorService_CalculateAverageServer) error {
 	return status.Errorf(codes.Unimplemented, "method CalculateAverage not implemented")
+}
+func (UnimplementedCalculatorServiceServer) CalculateMax(CalculatorService_CalculateMaxServer) error {
+	return status.Errorf(codes.Unimplemented, "method CalculateMax not implemented")
 }
 func (UnimplementedCalculatorServiceServer) mustEmbedUnimplementedCalculatorServiceServer() {}
 
@@ -211,6 +247,32 @@ func (x *calculatorServiceCalculateAverageServer) Recv() (*CalculatorRequest, er
 	return m, nil
 }
 
+func _CalculatorService_CalculateMax_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(CalculatorServiceServer).CalculateMax(&calculatorServiceCalculateMaxServer{stream})
+}
+
+type CalculatorService_CalculateMaxServer interface {
+	Send(*CalculatorResponse) error
+	Recv() (*CalculatorRequest, error)
+	grpc.ServerStream
+}
+
+type calculatorServiceCalculateMaxServer struct {
+	grpc.ServerStream
+}
+
+func (x *calculatorServiceCalculateMaxServer) Send(m *CalculatorResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *calculatorServiceCalculateMaxServer) Recv() (*CalculatorRequest, error) {
+	m := new(CalculatorRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // CalculatorService_ServiceDesc is the grpc.ServiceDesc for CalculatorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -232,6 +294,12 @@ var CalculatorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "CalculateAverage",
 			Handler:       _CalculatorService_CalculateAverage_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "CalculateMax",
+			Handler:       _CalculatorService_CalculateMax_Handler,
+			ServerStreams: true,
 			ClientStreams: true,
 		},
 	},

@@ -75,3 +75,55 @@ func calculateAverage(c pb.CalculatorServiceClient) {
 
 	log.Printf("CalculateAverage: %d\n", res.Result)
 }
+
+func calculateMax(c pb.CalculatorServiceClient) {
+	log.Println("calculateMax() invoked!")
+
+	requests := []*pb.CalculatorRequest{
+		{A: 1},
+		{A: 5},
+		{A: 3},
+		{A: 6},
+		{A: 2},
+		{A: 20},
+		{A: 19},
+	}
+
+	stream, err := c.CalculateMax(context.Background())
+	if err != nil {
+		log.Printf("error while creating stream: %v\n", err)
+	}
+
+	waitChan := make(chan struct{})
+
+	// Goroutine for sending the requests to server
+	go func() {
+		for _, req := range requests {
+			err := stream.Send(req)
+			if err != nil {
+				log.Printf("failed to send request: %v\n", err)
+			}
+			log.Printf("sent: %v\n", req.A)
+			time.Sleep(time.Second)
+		}
+
+		stream.CloseSend()
+	}()
+
+	// Goroutine for receiving server responses and ultimately close the channel
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			} else if err != nil {
+				log.Printf("error while receiving: %v\n", err)
+			}
+
+			log.Printf("Max number so far: %v\n", res.Result)
+		}
+		close(waitChan)
+	}()
+
+	<-waitChan
+}

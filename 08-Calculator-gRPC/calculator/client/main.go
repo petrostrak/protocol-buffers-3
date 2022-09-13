@@ -23,5 +23,6 @@ func main() {
 
 	// calculate(c)
 	// calculatePrimes(c)
-	calculateAverage(c)
+	// calculateAverage(c)
+	calculateMax(c)
 }

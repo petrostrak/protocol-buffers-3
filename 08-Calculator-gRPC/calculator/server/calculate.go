@@ -34,7 +34,7 @@ func (s *Server) CalculatePrimes(in *pb.CalculatorRequest, stream pb.CalculatorS
 }
 
 func (s *Server) CalculateAverage(stream pb.CalculatorService_CalculateAverageServer) error {
-	log.Printf("CalculateAverage() invoked with %v\n", stream)
+	log.Println("CalculateAverage() invoked")
 
 	var sum int32 = 0
 	var counter int32 = 0
@@ -54,5 +54,31 @@ func (s *Server) CalculateAverage(stream pb.CalculatorService_CalculateAverageSe
 		log.Printf("Received: %d\n", req.A)
 		log.Printf("Sum: %d", sum)
 		log.Printf("Counter: %d", counter)
+	}
+}
+
+func (s *Server) CalculateMax(stream pb.CalculatorService_CalculateMaxServer) error {
+	log.Println("CalculateMax() invoked")
+
+	var max int32 = 0
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			log.Printf("Max number was: %d\n", max)
+			return nil
+		} else if err != nil {
+			log.Printf("error while reading client stream: %v\n", err)
+		}
+
+		if req.A > max {
+			max = req.A
+		}
+
+		err = stream.Send(&pb.CalculatorResponse{
+			Result: max,
+		})
+		if err != nil {
+			log.Printf("error while sending data to client: %v\n", err)
+		}
 	}
 }

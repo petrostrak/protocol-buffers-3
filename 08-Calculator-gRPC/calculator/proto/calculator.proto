@@ -17,4 +17,5 @@ service CalculatorService {
     rpc Calculate(CalculatorRequest) returns (CalculatorResponse);
     rpc CalculatePrimes (CalculatorRequest) returns (stream CalculatorResponse);
     rpc CalculateAverage (stream CalculatorRequest) returns (CalculatorResponse);
+    rpc CalculateMax (stream CalculatorRequest) returns (stream CalculatorResponse);
 }

@@ -72,3 +72,50 @@ func doLongGreet(c pb.GreetServiceClient) {
 
 	log.Printf("LongGreet: %s\n", res.Result)
 }
+
+func doGreetEveryone(c pb.GreetServiceClient) {
+	log.Println("doGreetEveryone() invoked!")
+
+	stream, err := c.GreetEveryone(context.Background())
+	if err != nil {
+		log.Printf("error while creating steam: %v\n", err)
+	}
+
+	reqs := []*pb.GreetRequest{
+		{FirstName: "Petros"},
+		{FirstName: "Eirini"},
+		{FirstName: "Maggie"},
+	}
+
+	waitChan := make(chan struct{})
+
+	// This goroutine sends the requests to the server
+	go func() {
+		for _, req := range reqs {
+			log.Printf("send request: %v\n", req)
+			err := stream.Send(req)
+			if err != nil {
+				log.Printf("error sending request: %v\n", err)
+			}
+			time.Sleep(time.Second)
+		}
+		stream.CloseSend()
+	}()
+
+	// This goroutine waits for the response from the server
+	go func() {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			} else if err != nil {
+				log.Printf("error while receiving: %v\n", err)
+			}
+
+			log.Printf("received: %v\n", res.Result)
+		}
+		close(waitChan)
+	}()
+
+	<-waitChan
+}

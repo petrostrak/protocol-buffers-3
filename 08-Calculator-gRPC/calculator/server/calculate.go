@@ -3,8 +3,13 @@ package main
 import (
 	pb "calculator-grpc-unary-api/calculator/proto"
 	"context"
+	"fmt"
 	"io"
 	"log"
+	"math"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (s *Server) Calculate(ctx context.Context, in *pb.CalculatorRequest) (*pb.CalculatorResponse, error) {
@@ -81,4 +86,21 @@ func (s *Server) CalculateMax(stream pb.CalculatorService_CalculateMaxServer) er
 			log.Printf("error while sending data to client: %v\n", err)
 		}
 	}
+}
+
+func (s *Server) CalculateSquareRoot(ctx context.Context, in *pb.SqrtRequest) (*pb.SqrtResponse, error) {
+	log.Printf("CalculateSquareRoot() invoked with: %v\n", in)
+
+	number := in.Number
+
+	if number < 0 {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			fmt.Sprintf("Received a negatice number: %d", number),
+		)
+	}
+
+	return &pb.SqrtResponse{
+		Result: math.Sqrt(float64(in.Number)),
+	}, nil
 }

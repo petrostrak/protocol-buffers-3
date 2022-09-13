@@ -13,9 +13,18 @@ message CalculatorResponse {
     int32 result = 1;
 }
 
+message SqrtRequest {
+    int32 number = 1;
+}
+
+message SqrtResponse {
+    double result = 1;
+}
+
 service CalculatorService {
     rpc Calculate(CalculatorRequest) returns (CalculatorResponse);
     rpc CalculatePrimes (CalculatorRequest) returns (stream CalculatorResponse);
     rpc CalculateAverage (stream CalculatorRequest) returns (CalculatorResponse);
     rpc CalculateMax (stream CalculatorRequest) returns (stream CalculatorResponse);
+    rpc CalculateSquareRoot (SqrtRequest) returns (SqrtResponse);
 }

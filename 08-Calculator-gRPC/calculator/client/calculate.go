@@ -6,6 +6,9 @@ import (
 	"io"
 	"log"
 	"time"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func calculate(c pb.CalculatorServiceClient) {
@@ -126,4 +129,30 @@ func calculateMax(c pb.CalculatorServiceClient) {
 	}()
 
 	<-waitChan
+}
+
+func calculateSqrt(c pb.CalculatorServiceClient, n int32) {
+	log.Println("calculateSqrt() invoked!")
+
+	res, err := c.CalculateSquareRoot(context.Background(), &pb.SqrtRequest{
+		Number: n,
+	})
+	if err != nil {
+		// ok tells us if it is a gRPC error
+		e, ok := status.FromError(err)
+		if ok {
+			// gRPC error
+			log.Printf("error message from server: %s\n", e.Message())
+			log.Printf("error code from server: %s\n", e.Code())
+
+			if e.Code() == codes.InvalidArgument {
+				log.Println("We probable sent a negative number!")
+				return
+			}
+		} else {
+			log.Printf("A non gRPC error: %v\n", err)
+		}
+	}
+
+	log.Printf("Sqrt: %f\n", res.Result)
 }

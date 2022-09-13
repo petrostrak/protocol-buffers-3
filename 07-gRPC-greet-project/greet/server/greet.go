@@ -33,7 +33,7 @@ func (s *Server) GreetManyTimes(in *pb.GreetRequest, stream pb.GreetService_Gree
 
 // Client Streaming Server Implementation
 func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
-	log.Printf("GreetManyTimes() invoked with: %v\n", stream)
+	log.Printf("GreetManyTimes() invoked")
 
 	res := ""
 
@@ -49,5 +49,26 @@ func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
 
 		log.Printf("Receiving: %v\n", req)
 		res += fmt.Sprintf("Hello %s!\n", req.FirstName)
+	}
+}
+
+func (s *Server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error {
+	log.Println("GreetEveryone() invoked with")
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		} else if err != nil {
+			log.Printf("error while reading client stream: %v\n", err)
+		}
+
+		res := "Hello " + req.FirstName + "!"
+		err = stream.Send(&pb.GreetResponse{
+			Result: res,
+		})
+		if err != nil {
+			log.Printf("error while sending data to client: %v\n", err)
+		}
 	}
 }

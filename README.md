@@ -963,3 +963,54 @@ func calculateSqrt(c pb.CalculatorServiceClient, n int32) {
 	log.Printf("Sqrt: %f\n", res.Result)
 }
 ```
+### gRPC Deadlines
+- Deadlines allow gRPC clients to specify how long they are willing to wait for an RPC to complete before the RPC is returned with the error DEADLINE_EXCEEDED.
+- The gRPC documentation recommends you set a deadline for all client RPC calls.
+- The server should check if the deadling has exceeded and calcel the work it is doing.
+- Deadlines are propagated across if gRPC calls are chained. 
+   * A => B => C  (Deadline for A is passed to B and then passed to C)
+- More info on [gRPC Deadlines](https://grpc.io/blog/deadlines/)
+#### Server-side with deadlines
+```
+func (s *Server) GreetWithDeadline(ctx context.Context, in *pb.GreetRequest) (*pb.GreetResponse, error) {
+	for i := 0; i < 3; i++ {
+		if ctx.Err() == context.DeadlineExceeded {
+			log.Println("The client canceled the request!")
+			return nil, status.Error(codes.Canceled, "The client canceled the request!")
+		}
+
+		// Simulates delay
+		time.Sleep(time.Second)
+	}
+
+	return &pb.GreetResponse{
+		Result: "Hello " + in.FirstName + " !",
+	}, nil
+}
+```
+#### Client-side with deadlines
+```
+func greetWithDeadline(c pb.GreetServiceClient, timeout time.Duration) {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	req := &pb.GreetRequest{FirstName: "Petros!"}
+
+	res, err := c.GreetWithDeadline(ctx, req)
+	if err != nil {
+		e, ok := status.FromError(err)
+		if ok {
+			// handle error
+			if e.Code() == codes.DeadlineExceeded {
+				log.Println("Deadlline exceeded!")
+			} else {
+				log.Printf("unexpected gRPC err: %v\n", err)
+			}
+		} else {
+			log.Printf("A non gRPC err: %v\n", err)
+		}
+	}
+
+	log.Printf("greetWithDeadline: %s\n", res.Result)
+}
+```

@@ -916,6 +916,9 @@ To return an gRPC error we make use of the `status` package from `google.golang.
 
 For this method, we need to provide the error code, e.g. Aborted, AlreadyExists, InvalidArgument using the `codes` package from `google.golang.org/grpc/codes` and a string with the given message of the error.
 
+- [Error Handling 1](https://avi.im/grpc-errors/)
+- [Error Handling 2](https://grpc.io/docs/guides/error/)
+
 #### Server-side Error Handling
 ```
 func (s *Server) CalculateSquareRoot(ctx context.Context, in *pb.SqrtRequest) (*pb.SqrtResponse, error) {

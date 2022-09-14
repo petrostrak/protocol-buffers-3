@@ -55,7 +55,7 @@ A list of the Protocol Buffers well-known types can be found [here](https://deve
 
 ### Enums
 Specifically for `Enums` the tag number starts at 0.
-```
+```proto
 enum Weekdays {
     WEEKDAY_UNSPECIFIED = 0;
     WEEKDAY_MONDAY = 1;
@@ -77,7 +77,7 @@ message Schedule {
 ### Repeated Fields
 `repeated` fields represent lists
 
-```
+```proto
 message Account {
     uint32 id = 1;
     Person person = 2;
@@ -91,7 +91,7 @@ message Account {
 ### Nested Messages
 We can nest our messages in a `.proto` file as shown below:
 
-```
+```proto
 message City {
     string name = 1;
     uint64 zip_code = 2;
@@ -119,7 +119,7 @@ message Address {
 ### Import Messages
 We can import messages from different `.proto` files:
 
-```
+```proto
 import "city.proto";
 import "street.proto";
 import "building.proto";
@@ -134,7 +134,7 @@ message Address {
 ### Import Messages from package
 Or we can import messages from different packages:
 
-```
+```proto
 package city;
 
 message City {
@@ -144,7 +144,7 @@ message City {
 }
 ```
 
-```
+```proto
 package street;
 
 import "city.proto";
@@ -155,7 +155,7 @@ message Street {
 }
 ```
 
-```
+```proto
 package building;
 
 import "street.proto";
@@ -167,7 +167,7 @@ message Building {
 }
 ```
 
-```
+```proto
 package address;
 
 import "city.proto";
@@ -183,16 +183,15 @@ message Address {
 
 ## Golang Programming with protobuf
 ### A simple proto struct example
-```
-# .proto
+```proto
 message Simple {
     uint32 id = 1;
     bool is_simple = 2;
     string name = 3;
     repeated int32 sample_list = 4;
 }
-
-# .go
+```
+```go
 func getSimple() *pb.Simple {
 	return &pb.Simple{
 		Id:         42,
@@ -204,8 +203,7 @@ func getSimple() *pb.Simple {
 ```
 
 ### A complex proto struct example
-```
-# .proto
+```proto
 message Dummy {
     int32 id = 1;
     string name = 2;
@@ -215,8 +213,9 @@ message Complex {
     Dummy one_dummy = 1;
     repeated Dummy multi_dummy = 2;
 }
+```
 
-# .go
+```go
 func getComplex() *pb.Complex {
 	return &pb.Complex{
 		OnDummy: &pb.Dummy{
@@ -233,8 +232,7 @@ func getComplex() *pb.Complex {
 ```
 
 ### An enum proto struct example
-```
-# .proto
+```proto
 enum EyeColor {
     EYE_COLOR_UNSPECIFIED = 0;
     EYE_COLOR_GREEN = 1;
@@ -245,8 +243,8 @@ enum EyeColor {
 message Enumeration {
     EyeColor eye_color = 1;
 }
-
-# .go
+```
+```go
 func getEnum() *pb.Enumeration {
 	return &pb.Enumeration{
 		// EyeColor: pb.EyeColor_EYE_COLOR_BROWN,
@@ -256,9 +254,7 @@ func getEnum() *pb.Enumeration {
 ```
 
 ### OneOfs
-```
-# .proto
-
+```proto
 // oneof either takes a message that is string, 
 // or a message that is int32.
 message Result {
@@ -267,8 +263,8 @@ message Result {
         uint32 id = 2;
     }
 }
-
-# .go
+```
+```go
 func getOneOf(msg any) {
 	switch x := msg.(type) {
 	case *pb.Result_Id:
@@ -283,9 +279,7 @@ func getOneOf(msg any) {
 <sub>oneof cannot be repeated.</sub>
 
 ### Maps
-```
-# .proto
-
+```proto
 // IdWrapper is the value of the key-value pair in a map.
 // So the type of the wrapper will be the type of the value
 // of the map.
@@ -297,8 +291,8 @@ message IdWrapper {
 message MapExample {
     map<string, IdWrapper> ids = 1;
 }
-
-# .go
+```
+```go
 func getMap() *pb.MapExample {
 	return &pb.MapExample{
 		Ids: map[string]*pb.IdWrapper{
@@ -314,7 +308,7 @@ func getMap() *pb.MapExample {
 
 ### Reading and Writing to Disk
 #### Write to file with proto
-```
+```go
 func writeToFile(filename string, pb proto.Message) {
 	out, err := proto.Marshal(pb)
 	if err != nil {
@@ -331,7 +325,7 @@ func writeToFile(filename string, pb proto.Message) {
 ```
 
 #### Read from file with proto
-```
+```go
 func readFromFile(filename string, pb proto.Message) {
 	in, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -349,7 +343,7 @@ func readFromFile(filename string, pb proto.Message) {
 
 ### Reading and Writing to JSON
 #### Encode to JSON
-```
+```go
 func toJSON(pb proto.Message) string {
 	option := protojson.MarshalOptions{
 		Multiline: true,
@@ -364,7 +358,7 @@ func toJSON(pb proto.Message) string {
 ```
 
 #### Decode from JSON
-```
+```go
 func fromJSON(in string, pb proto.Message) {
 	option := protojson.UnmarshalOptions{
 		DiscardUnknown: true,
@@ -398,7 +392,7 @@ We can rename fields freely when we want to update a `.proto` file. Remember tha
 
 #### Removing Fields
 If we want to remove an existing field for our newer `.proto` version, we use the keyword `reserved` before the number tag and optionally before the name. In this way, we prevent the tag and name for future use.
-```
+```proto
 message Example {
 	reserved 2,3,9 to 11; // 9 and 11 including
 	reserved "first_name", "last_name";
@@ -407,15 +401,15 @@ message Example {
 ```
 ### --decode_raw option
 The `--decode_raw` command reads an arbitrary protocol message from standard input and writes the raw tag/value pairs in text format to standard output.
-```
-# .proto
+```proto
 message Simple {
     uint32 id = 1;
     bool is_simple = 2;
     string name = 3;
     repeated int32 sample_list = 4;
 }
-
+```
+```
 # .bin
 *My name"
 
@@ -428,15 +422,15 @@ $ cat simple.bin | protoc --decode_raw
 
 ### --decode option
 The `--decode` command reads a binary message of the given type from standard input and writes it in text format to standard output.  The message type must be defined in PROTO_FILES or their imports.. 
-```
-# .proto
+```proto
 message Simple {
     uint32 id = 1;
     bool is_simple = 2;
     string name = 3;
     repeated int32 sample_list = 4;
 }
-
+```
+```
 # .bin
 *My name"
 
@@ -486,7 +480,7 @@ The `descriptor.proto` defines the metadata for the proto files, messages, enums
 A `service` is quite generic in protocol buffers and it's not designed for serialization or deserialization. Instead it is designed for *communication*.
 
 Services are a set of endpoints that are defining an API. A contract for RPC framework. Then with this framework we send serialized messages and these messages will automatically  be deserialized into objects that we can use on the server side or on the client side.
-```
+```proto
 message GetSomethingRequest {
 	//...
 }
@@ -642,7 +636,7 @@ Breaking down the above command:
 
 ### Create a minimal gRPC server and client
 #### Server
-```
+```go
 var addr = "0.0.0.0:50051"
 
 type Server struct {
@@ -665,7 +659,7 @@ func main() {
 }
 ```
 #### Client
-```
+```go
 var addr = "0.0.0.0:50051"
 
 func main() {
@@ -679,7 +673,7 @@ func main() {
 
 ### Unary API 
 #### Server Implementation
-```
+```go
 func main() {
 	...
 	pb.RegisterGreetServiceServer(s, &Server{})
@@ -695,7 +689,7 @@ func (s *Server) Greet(ctx context.Context, in *pb.GreetRequest) (*pb.GreetRespo
 ```
 
 #### Client Implementation
-```
+```go
 func main() {
 	...
 	c := pb.NewGreetServiceClient(conn)
@@ -717,14 +711,14 @@ func greet(c pb.GreetServiceClient) {
 
 ### Server Streaming API
 #### Server Implementation
-```
-# in .proto file add the streaming server API
+###### in .proto file add the streaming client API
+```proto
 service GreetService {
 	...
     rpc GreetManyTimes (GreetRequest) returns (stream GreetResponse);
 }
 ```
-```
+```go
 // Implementation of the Streaming Server API.
 func (s *Server) GreetManyTimes(in *pb.GreetRequest, stream pb.GreetService_GreetManyTimesServer) error {
 	for i := 0; i < 10; i++ {
@@ -739,7 +733,7 @@ func (s *Server) GreetManyTimes(in *pb.GreetRequest, stream pb.GreetService_Gree
 }
 ```
 #### Client Implementation
-```
+```go
 func main() {
 	...
 	doGreetManyTimes(c)
@@ -769,14 +763,14 @@ func doGreetManyTimes(c pb.GreetServiceClient) {
 ```
 ### Client Streaming API
 #### Server Implementation
-```
-# in .proto file add the streaming client API
+###### in .proto file add the streaming client API
+```proto
 service GreetService {
 	...
     rpc LongGreet (stream GreetRequest) returns (GreetResponse);
 }
 ```
-```
+```go
 // Client Streaming Server Implementation
 func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
 	res := ""
@@ -796,7 +790,7 @@ func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
 }
 ```
 #### Client Implementation
-```
+```go
 func main() {
 	...
 	doLongGreet(c)
@@ -831,8 +825,8 @@ func doLongGreet(c pb.GreetServiceClient) {
 ```
 ### Bi-Directional Streaming API
 #### Server Implementation
-```
-# in .proto file add the Bi-Directional API
+###### in .proto file add the Bi-Directional API
+```proto
 service GreetService {
 	...
     rpc GreetEveryone (stream GreetRequest) returns (stream GreetResponse);
@@ -859,7 +853,7 @@ func (s *Server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error
 }
 ```
 #### Client Implementation
-```
+```go
 func main() {
 	...
 	doGreetEveryone(c)
@@ -920,7 +914,7 @@ For this method, we need to provide the error code, e.g. Aborted, AlreadyExists,
 - [Error Handling 2](https://grpc.io/docs/guides/error/)
 
 #### Server-side Error Handling
-```
+```go
 func (s *Server) CalculateSquareRoot(ctx context.Context, in *pb.SqrtRequest) (*pb.SqrtResponse, error) {
 	number := in.Number
 
@@ -938,7 +932,7 @@ func (s *Server) CalculateSquareRoot(ctx context.Context, in *pb.SqrtRequest) (*
 ```
 #### Client-side Error Handling
 In client-side, we can check the errors coming from the server with the use of `.FromError(e errors)` from the `status` package from `google.golang.org/grpc/status`. This method returns the status of the error (code and message that were defined in the server previously) and a bool that tells us whether the error is an gRPC error or not. 
-```
+```go
 func calculateSqrt(c pb.CalculatorServiceClient, n int32) {
 	res, err := c.CalculateSquareRoot(context.Background(), &pb.SqrtRequest{
 		Number: n,
@@ -971,7 +965,7 @@ func calculateSqrt(c pb.CalculatorServiceClient, n int32) {
    * A => B => C  (Deadline for A is passed to B and then passed to C)
 - More info on [gRPC Deadlines](https://grpc.io/blog/deadlines/)
 #### Server-side with deadlines
-```
+```go
 func (s *Server) GreetWithDeadline(ctx context.Context, in *pb.GreetRequest) (*pb.GreetResponse, error) {
 	for i := 0; i < 3; i++ {
 		if ctx.Err() == context.DeadlineExceeded {
@@ -989,7 +983,7 @@ func (s *Server) GreetWithDeadline(ctx context.Context, in *pb.GreetRequest) (*p
 }
 ```
 #### Client-side with deadlines
-```
+```go
 func greetWithDeadline(c pb.GreetServiceClient, timeout time.Duration) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -1036,7 +1030,7 @@ func greetWithDeadline(c pb.GreetServiceClient, timeout time.Duration) {
 - SSL allows clients and servers to encrypt packets.
 ![alt text](https://github.com/petrostrak/protocol-buffers-3-and-gRPC-in-Go/blob/main/imgs/https.png)
 #### Server Configuration with SSL Encryption
-```
+```go
 func main() {
 	
 	...
@@ -1060,7 +1054,7 @@ func main() {
 }
 ```
 #### Client Configuration with SSL Encryption
-```
+```go
 func main() {
 	tls := true
 	opts := []grpc.DialOption{}

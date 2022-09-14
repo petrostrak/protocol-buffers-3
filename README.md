@@ -1014,3 +1014,70 @@ func greetWithDeadline(c pb.GreetServiceClient, timeout time.Duration) {
 	log.Printf("greetWithDeadline: %s\n", res.Result)
 }
 ```
+### SSL Encryption in gRPC
+- In production, gRPC calls should be running with encryption enabled.
+- This is done by generating SSL certificates.
+- SSL allows communication to be secure end-to-end and ensuring no Man in the middle attack can be performed.
+![alt text](https://github.com/petrostrak/protocol-buffers-3-and-gRPC-in-Go/blob/main/imgs/SSL-in-gRPC.png)
+
+#### Hands on SSL Encryption in gRPC with Go
+- Setup a certificate authority.
+- Setup a server certificate.
+   * Setup the server to use TLS.
+- Sign a server certificate.
+   * Setup the client to connect securely over TLS.
+- More info on [ssl with gRPC](https://grpc.io/docs/guides/auth/)
+
+#### How SSL works
+- When you communicate over the internet, your data is visible by all the servers that transfer your packet.
+- Any router in the middle can view the packets you're sending using PLAINTEXT.
+![alt text](https://github.com/petrostrak/protocol-buffers-3-and-gRPC-in-Go/blob/main/imgs/http.png)
+
+- SSL allows clients and servers to encrypt packets.
+![alt text](https://github.com/petrostrak/protocol-buffers-3-and-gRPC-in-Go/blob/main/imgs/https.png)
+#### Server Configuration with SSL Encryption
+```
+func main() {
+	
+	...
+	opts := []grpc.ServerOption{}
+	tls := true
+	if tls {
+		certFile := "ssl/server.ctr"
+		keyFile := "ssl/server.pem"
+		creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+		if err != nil {
+			log.Printf("failed to load certs")
+			os.Exit(1)
+		}
+
+		opts = append(opts, grpc.Creds(creds))
+	}
+
+	s := grpc.NewServer(opts...)
+	...
+
+}
+```
+#### Client Configuration with SSL Encryption
+```
+func main() {
+	tls := true
+	opts := []grpc.DialOption{}
+
+	if tls {
+		certFile := "ssl/ca.crt"
+
+		// We are on localhost so we don't need the second parameter
+		// serverNameOverride therefore we enter "".
+		creds, err := credentials.NewClientTLSFromFile(certFile, "")
+		if err != nil {
+			log.Printf("error while loading CA trust certificate: %v\n", err)
+		}
+
+		opts = append(opts, grpc.WithTransportCredentials(creds))
+	}
+
+	conn, err := grpc.Dial(addr, opts...)
+}
+```

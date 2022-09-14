@@ -20,6 +20,9 @@ func main() {
 
 	if tls {
 		certFile := "ssl/ca.crt"
+
+		// We are on localhost so we don't need the second parameter
+		// serverNameOverride therefore we enter "".
 		creds, err := credentials.NewClientTLSFromFile(certFile, "")
 		if err != nil {
 			log.Printf("error while loading CA trust certificate: %v\n", err)

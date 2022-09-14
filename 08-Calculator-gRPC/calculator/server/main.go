@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 var addr = "0.0.0.0:50051"
@@ -24,6 +25,7 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterCalculatorServiceServer(s, &Server{})
+	reflection.Register(s)
 
 	err = s.Serve(l)
 	if err != nil {

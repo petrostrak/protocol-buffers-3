@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"time"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Unary API Server Implementation
@@ -53,7 +57,7 @@ func (s *Server) LongGreet(stream pb.GreetService_LongGreetServer) error {
 }
 
 func (s *Server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error {
-	log.Println("GreetEveryone() invoked with")
+	log.Println("GreetEveryone() invoked")
 
 	for {
 		req, err := stream.Recv()
@@ -71,4 +75,21 @@ func (s *Server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error
 			log.Printf("error while sending data to client: %v\n", err)
 		}
 	}
+}
+
+func (s *Server) GreetWithDeadline(ctx context.Context, in *pb.GreetRequest) (*pb.GreetResponse, error) {
+	log.Printf("GreetWithDeadline() invoked with: %v\n", in)
+
+	for i := 0; i < 3; i++ {
+		if ctx.Err() == context.DeadlineExceeded {
+			log.Println("The client canceled the request!")
+			return nil, status.Error(codes.Canceled, "The client canceled the request!")
+		}
+
+		time.Sleep(time.Second)
+	}
+
+	return &pb.GreetResponse{
+		Result: "Hello " + in.FirstName + " !",
+	}, nil
 }

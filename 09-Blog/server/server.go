@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"github.com/golang/protobuf/ptypes/empty"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -40,7 +41,32 @@ func (s *Server) CreateBlog(ctx context.Context, in *pb.Blog) (*pb.BlogId, error
 	return &pb.BlogId{Id: oid.Hex()}, nil
 }
 
-func (s *Server) ReadBlog(ctx context.Context, in *pb.BlogId) (*pb.Blog, error) { return nil, nil }
+func (s *Server) ReadBlog(ctx context.Context, in *pb.BlogId) (*pb.Blog, error) {
+	log.Printf("ReadBlog() invoked with %v\n", in)
+
+	oid, err := primitive.ObjectIDFromHex(in.Id)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.InvalidArgument,
+			fmt.Sprintf("error parse ID: %v\n", err),
+		)
+	}
+
+	data := &BlogItem{}
+	filter := bson.M{"_id": oid}
+
+	res := collection.FindOne(ctx, filter)
+
+	err = res.Decode(data)
+	if err != nil {
+		return nil, status.Errorf(
+			codes.NotFound,
+			fmt.Sprintf("cannot find blog with the ID provided: %v\n", err),
+		)
+	}
+
+	return documentToBlog(data), nil
+}
 
 func (s *Server) UpdateBlog(ctx context.Context, in *pb.Blog) (*empty.Empty, error) { return nil, nil }
 

@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (s *Server) CreateBLog(ctx context.Context, in *pb.Blog) (*pb.BlogId, error) {
+func (s *Server) CreateBlog(ctx context.Context, in *pb.Blog) (*pb.BlogId, error) {
 	log.Printf("CreateBLog() invoked with %v\n", in)
 
 	data := BlogItem{

@@ -18,7 +18,7 @@ message BlogId {
 }
 
 service BlogService {
-    rpc CreateBLog (Blog) returns (BlogId);
+    rpc CreateBlog (Blog) returns (BlogId);
     rpc ReadBlog (BlogId) returns (Blog);
     rpc UpdateBlog (Blog) returns (google.protobuf.Empty);
     rpc DeleteBlog (BlogId) returns (google.protobuf.Empty);

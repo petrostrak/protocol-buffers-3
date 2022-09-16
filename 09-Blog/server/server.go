@@ -40,10 +40,12 @@ func (s *Server) CreateBlog(ctx context.Context, in *pb.Blog) (*pb.BlogId, error
 	return &pb.BlogId{Id: oid.Hex()}, nil
 }
 
-func (s *Server) ReadBlog(ctx context.Context, in *pb.BlogId) (*pb.Blog, error)
+func (s *Server) ReadBlog(ctx context.Context, in *pb.BlogId) (*pb.Blog, error) { return nil, nil }
 
-func (s *Server) UpdateBlog(ctx context.Context, in *pb.Blog) (*empty.Empty, error)
+func (s *Server) UpdateBlog(ctx context.Context, in *pb.Blog) (*empty.Empty, error) { return nil, nil }
 
-func (s *Server) DeleteBlog(ctx context.Context, in *pb.BlogId) (*empty.Empty, error)
+func (s *Server) DeleteBlog(ctx context.Context, in *pb.BlogId) (*empty.Empty, error) {
+	return nil, nil
+}
 
-func (s *Server) ListBlogs(_ *empty.Empty, stream pb.BlogService_ListBlogsServer) error
+func (s *Server) ListBlogs(_ *empty.Empty, stream pb.BlogService_ListBlogsServer) error { return nil }

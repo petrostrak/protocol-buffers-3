@@ -31,10 +31,28 @@ func readBlog(c pb.BlogServiceClient, id string) *pb.Blog {
 	req := &pb.BlogId{Id: id}
 	res, err := c.ReadBlog(context.Background(), req)
 	if err != nil {
-		log.Printf("err while reading err %v\n", err)
+		log.Printf("err while reading %v\n", err)
 	}
 
 	log.Printf("Blog was read: %v\n", res)
 
 	return res
+}
+
+func updateBlog(c pb.BlogServiceClient, id string) {
+	log.Println("updateBlog() invoked!")
+
+	newBlog := &pb.Blog{
+		Id:       id,
+		AuthorId: "Not Petros",
+		Title:    "An updated Title",
+		Content:  "Vietnam was awesome!",
+	}
+
+	_, err := c.UpdateBlog(context.Background(), newBlog)
+	if err != nil {
+		log.Printf("err while updating %v\n", err)
+	}
+
+	log.Println("Blog was updated!")
 }

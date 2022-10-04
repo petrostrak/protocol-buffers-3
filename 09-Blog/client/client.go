@@ -79,3 +79,14 @@ func listBlog(c pb.BlogServiceClient) {
 		log.Println(res)
 	}
 }
+
+func deleteBlog(c pb.BlogServiceClient, id string) {
+	log.Println("deleteBlog() invoked!")
+
+	_, err := c.DeleteBlog(context.Background(), &pb.BlogId{Id: id})
+	if err != nil {
+		log.Printf("Error while deleting: %v\n", err)
+	}
+
+	log.Printf("Blog with id of %s deleted!\n", id)
+}
